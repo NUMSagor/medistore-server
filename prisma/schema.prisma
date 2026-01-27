@@ -1,0 +1,205 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// ENUMS
+
+enum Role {
+  ADMIN
+  SELLER
+  CUSTOMER
+}
+
+enum UserStatus {
+  ACTIVE
+  BANNED
+}
+
+enum OrderStatus {
+  PLACED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+/// MODELS
+
+model User {
+  id       String     @id @default(uuid())
+  name     String
+  email    String     @unique
+  password String
+  role     Role       @default(CUSTOMER)
+  status   UserStatus @default(ACTIVE)
+
+  // relations
+  medicines Medicine[] @relation("SellerMedicines")
+  orders    Order[]
+  reviews   Review[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// model Category {
+//   id        String     @id @default(uuid())
+//   name      String     @unique
+//   isActive  Boolean    @default(true)
+
+//   medicines Medicine[]
+
+//   createdAt DateTime   @default(now())
+//   updatedAt DateTime   @updatedAt
+// }
+
+model Category {
+  id       String  @id @default(uuid())
+  name     String
+  slug     String  @unique
+  isActive Boolean @default(true)
+
+  // self relation (hierarchy)
+  parentId String?
+  parent   Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryHierarchy")
+
+  medicines Medicine[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// model Medicine {
+//   id          String   @id @default(uuid())
+//   name        String
+//   description String
+//   price       Float
+//   stock       Int
+//   isActive    Boolean  @default(true)
+
+//   // relations
+//   sellerId   String
+//   seller     User     @relation("SellerMedicines", fields: [sellerId], references: [id])
+
+//   categoryId String
+//   category   Category @relation(fields: [categoryId], references: [id])
+
+//   orderItems OrderItem[]
+//   reviews    Review[]
+
+//   createdAt  DateTime @default(now())
+//   updatedAt  DateTime @updatedAt
+// }
+
+// model Medicine {
+//   id            String   @id @default(uuid())
+//   name          String
+//   genericName   String
+//   manufacturer  String
+
+//   description   String
+//   price         Float
+//   stock         Int
+//   isActive      Boolean  @default(true)
+
+//   // relations
+//   sellerId     String
+//   seller       User     @relation("SellerMedicines", fields: [sellerId], references: [id])
+
+//   categoryId   String
+//   category     Category @relation(fields: [categoryId], references: [id])
+
+//   orderItems   OrderItem[]
+//   reviews      Review[]
+
+//   createdAt    DateTime @default(now())
+//   updatedAt    DateTime @updatedAt
+// }
+
+model Medicine {
+  id           String @id @default(uuid())
+  name         String
+  genericName  String
+  manufacturer String
+
+  description     String
+  price           Float
+  discountPercent Int     @default(0)
+  stock           Int
+  isActive        Boolean @default(true)
+
+  sellerId String
+  seller   User   @relation("SellerMedicines", fields: [sellerId], references: [id])
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  orderItems OrderItem[]
+  reviews    Review[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([categoryId])
+  @@index([price])
+  @@index([createdAt])
+}
+
+model Order {
+  id         String @id @default(uuid())
+  customerId String
+  customer   User   @relation(fields: [customerId], references: [id])
+
+  status          OrderStatus @default(PLACED)
+  shippingAddress String
+
+  items OrderItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model OrderItem {
+  id String @id @default(uuid())
+
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id])
+
+  medicineId String
+  medicine   Medicine @relation(fields: [medicineId], references: [id])
+
+  quantity Int
+  price    Float // price snapshot at order time
+
+  createdAt DateTime @default(now())
+
+  @@unique([orderId, medicineId])
+}
+
+model Review {
+  id      String  @id @default(uuid())
+  rating  Int
+  comment String?
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  medicineId String
+  medicine   Medicine @relation(fields: [medicineId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, medicineId])
+}
