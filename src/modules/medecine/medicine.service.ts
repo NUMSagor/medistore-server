@@ -43,21 +43,65 @@ const medicineService = {
     },
 
     // GET ALL
+    // getAll: async (filters?: { categoryId?: string; minPrice?: number; maxPrice?: number }) => {
+    //     return prisma.medicine.findMany({
+    //         where: {
+    //             isActive: true,
+    //             ...(filters?.categoryId && { categoryId: filters.categoryId }),
+    //             ...(filters?.minPrice && { price: { gte: filters.minPrice } }),
+    //             ...(filters?.maxPrice && { price: { lte: filters.maxPrice } }),
+    //         },
+    //         include: {
+    //             category: true,
+    //             seller: { select: { id: true, name: true } },
+    //         },
+    //         orderBy: { createdAt: "desc" },
+    //     });
+    // },
+
+
     getAll: async (filters?: { categoryId?: string; minPrice?: number; maxPrice?: number }) => {
-        return prisma.medicine.findMany({
-            where: {
-                isActive: true,
-                ...(filters?.categoryId && { categoryId: filters.categoryId }),
-                ...(filters?.minPrice && { price: { gte: filters.minPrice } }),
-                ...(filters?.maxPrice && { price: { lte: filters.maxPrice } }),
-            },
-            include: {
-                category: true,
-                seller: { select: { id: true, name: true } },
-            },
-            orderBy: { createdAt: "desc" },
+    // Fetch medicines
+    const medicines = await prisma.medicine.findMany({
+        where: {
+            isActive: true,
+            ...(filters?.categoryId && { categoryId: filters.categoryId }),
+            ...(filters?.minPrice && { price: { gte: filters.minPrice } }),
+            ...(filters?.maxPrice && { price: { lte: filters.maxPrice } }),
+        },
+        include: {
+            category: true,
+            seller: { select: { id: true, name: true } },
+        },
+        orderBy: { createdAt: "desc" },
+    });
+
+    // Total number of medicines
+    const totalMedicines = await prisma.medicine.count({
+        where: {
+            isActive: true,
+            ...(filters?.categoryId && { categoryId: filters.categoryId }),
+            ...(filters?.minPrice && { price: { gte: filters.minPrice } }),
+            ...(filters?.maxPrice && { price: { lte: filters.maxPrice } }),
+        },
+    });
+
+    // Total number of categories
+    const totalCategories = await prisma.category.count();
+
+    // Total number of sellers
+    const totalSellers = await prisma.user.count({
+            where: { role: "SELLER" },
         });
-    },
+
+    return {
+        totalMedicines,
+        totalCategories,
+        totalSellers,
+        medicines,
+    };
+},
+
 
     // GET BY ID
     getById: async (id: string) => {
