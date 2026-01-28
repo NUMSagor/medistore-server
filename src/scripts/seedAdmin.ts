@@ -1,61 +1,39 @@
-
-import { PrismaClient } from "@prisma/client/extension";
+import bcrypt from "bcryptjs";
+import { prisma } from "../lib/prisma";
 import { Role } from "../../generated/prisma/enums";
 
 
-const prisma = new PrismaClient();
-
-
 async function seedAdmin() {
-    try {
-        const adminData = {
-            name: "Sagor Mahmud",
-            email: "smadmin@gmail.com",
-            role: Role.ADMIN,
-            password: "sagor123450",
-        };
+  try {
+    const email = "smadmin@gmail.com";
 
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
+    });
 
-
-        // check if user already exists
-        const existingUser = await prisma.user.findUnique({
-            where: { email: adminData.email },
-        });
-
-        if (existingUser) {
-            throw new Error("User already exists");
-        }
-
-
-        const signUpAdmin = await fetch("http://localhost:5000/api/auth/sign-up/email", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(adminData),
-        });
-
-        if (signUpAdmin.ok) {
-            console.log("Admin is created ");
-
-            // update email verification status
-            await prisma.user.update({
-                where: { email: adminData.email },
-                data: { emailVerified: true },
-            });
-
-            console.log(" Email verification status updated!");
-
-        } else {
-            throw new Error("Failed to create admin");
-        }
-
-        console.log("******* SUCCESS *******");
-
-    } catch (error) {
-        console.error("Error seeding admin:", error);
-    } finally {
-        await prisma.$disconnect();
+    if (existingUser) {
+      console.log("Admin already exists");
+      return;
     }
+
+    const hashedPassword = await bcrypt.hash("sagor123450", 10);
+
+    await prisma.user.create({
+      data: {
+        name: "Sagor Mahmud",
+        email,
+        password: hashedPassword,
+        role: Role.ADMIN,
+        status: "ACTIVE",
+      },
+    });
+
+    console.log("Admin seeded successfully");
+  } catch (error) {
+    console.error("Admin seeding failed:", error);
+  } finally {
+    await prisma.$disconnect();
+  }
 }
 
 seedAdmin();
-

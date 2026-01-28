@@ -66,7 +66,7 @@ model User {
 
 model Category {
   id       String  @id @default(uuid())
-  name     String
+  name     String @unique
   slug     String  @unique
   isActive Boolean @default(true)
 
@@ -134,14 +134,14 @@ model Medicine {
   genericName  String
   manufacturer String
 
-  description     String
+  description     String?
   price           Float
   discountPercent Int     @default(0)
   stock           Int
   isActive        Boolean @default(true)
 
   sellerId String
-  seller   User   @relation("SellerMedicines", fields: [sellerId], references: [id])
+  seller   User     @relation("SellerMedicines", fields: [sellerId], references: [id])
 
   categoryId String
   category   Category @relation(fields: [categoryId], references: [id])
@@ -155,7 +155,11 @@ model Medicine {
   @@index([categoryId])
   @@index([price])
   @@index([createdAt])
-}
+} 
+
+
+
+
 
 model Order {
   id         String @id @default(uuid())
