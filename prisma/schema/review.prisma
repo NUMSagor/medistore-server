@@ -1,0 +1,23 @@
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+
+model Review {
+  id      String  @id @default(uuid())
+  rating  Int
+  comment String?
+  status    ReviewStatus @default(PENDING)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  medicineId String
+  medicine   Medicine @relation(fields: [medicineId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, medicineId])
+}

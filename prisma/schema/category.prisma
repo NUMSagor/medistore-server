@@ -1,0 +1,16 @@
+model Category {
+  id       String  @id @default(uuid())
+  name     String @unique
+  slug     String  @unique
+  isActive Boolean @default(true)
+
+  // self relation (hierarchy)
+  parentId String?
+  parent   Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryHierarchy")
+
+  medicines Medicine[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
