@@ -30,15 +30,7 @@ const orderService = {
             })
         );
 
-        // const order = await prisma.order.create({
-        //     data: {
-        //         customerId: data.customerId,
-        //         shippingAddress: data.shippingAddress,
-        //         items: { create: itemsData },
-        //     },
-        //     include: { items: { include: { medicine: true } } },
-        // });
-
+        // create order
 
         const order = await prisma.order.create({
             data: {
@@ -59,11 +51,8 @@ const orderService = {
                     },
                 },
             },
-});
+        });
 
-
-
-        // reduce stock for medicines
         await Promise.all(
             itemsData.map((item) =>
                 prisma.medicine.update({
@@ -91,43 +80,6 @@ const orderService = {
         });
     },
 
-    // getBySeller: async (sellerId: string) => {
-    //     return prisma.order.findMany({
-    //         where: { items: { some: { medicine: { sellerId } } } },
-    //         include: { items: { include: { medicine: true } }, customer: true },
-    //         orderBy: { createdAt: "desc" },
-    //     });  
-    // },
-
-
-//     getBySeller: async (sellerId: string) => {
-//   return prisma.order.findMany({
-//     where: {
-//       items: {
-//         some: { medicine: { sellerId } },
-//       },
-//     },
-//     include: {
-//       items: {
-//         include: {
-//           medicine: {
-//             select: {
-//               id: true,
-//               name: true,
-//               seller: {
-//                 select: { name: true },
-//               },
-//             },
-//           },
-//         },
-//       },
-//       customer: true,
-//     },
-//     orderBy: { createdAt: "desc" },
-//   });
-// },
-
-
     getBySeller: async (sellerId: string) => {
         return prisma.order.findMany({
             where: {
@@ -148,11 +100,6 @@ const orderService = {
             orderBy: { createdAt: "desc" },
         });
     },
-
-
-
-
-
 
     updateStatus: async (orderId: string, status: OrderStatus) => {
         return prisma.order.update({

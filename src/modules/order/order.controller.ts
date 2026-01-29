@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import orderService from "./order.service";
 import { OrderStatus } from "../../../generated/prisma/enums";
-import { prisma } from "../../lib/prisma";
+
 
 const orderController = {
-    // CUSTOMER: create new order
+    //  create new order by customer
     create: async (req: Request, res: Response) => {
         try {
             const customerId = req.user?.userId;
@@ -22,7 +22,7 @@ const orderController = {
         }
     },
 
-    // CUSTOMER: get all orders of logged-in customer
+    // get all orders of logged-in customer
     getMyOrders: async (req: Request, res: Response) => {
         try {
             const customerId = req.user?.userId;
@@ -33,7 +33,7 @@ const orderController = {
         }
     },
 
-    // CUSTOMER: get order by ID
+    // get order by ID-customer
     getOrderById: async (req: Request, res: Response) => {
         try {
             const customerId = req.user?.userId;
@@ -50,41 +50,10 @@ const orderController = {
     },
 
 
-
-    // SELLER: get all incoming orders for seller's medicines
-    // getSellerOrders: async (req: Request, res: Response) => {
-    //     try {
-    //         const sellerId = req.user?.userId;
-    //         const orders = await orderService.getBySeller(sellerId);
-    //         res.status(200).json(orders);
-    //     } catch (err) {
-    //         res.status(400).json({ error: (err as Error).message });
-    //     }
-    // },
-
-
-// getSellerOrders: async (req: Request, res: Response) => {
-//   try {
-//     const sellerId = req.user?.userId;
-//     const orders = await orderService.getBySeller(sellerId);
-
-//     const result = orders.map(order => ({
-//       ...order,
-//       sellerName: order.items[0]?.medicine?.seller?.name || null,
-//     }));
-
-//     res.status(200).json(result);
-//   } catch (err) {
-//     res.status(400).json({ error: (err as Error).message });
-//   }
-// },
-
 getSellerOrders: async (req: Request, res: Response) => {
   try {
     const sellerId = req.user?.userId;
     const orders = await orderService.getBySeller(sellerId);
-
-    // attach top-level seller name (from first medicine in items)
     const result = orders.map(order => ({
       ...order,
       sellerName: order.items[0]?.medicine?.seller?.name || null,

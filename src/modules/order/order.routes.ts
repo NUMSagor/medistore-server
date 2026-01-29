@@ -6,15 +6,15 @@ import { Role } from "../../../generated/prisma/enums";
 const router = Router();
 
 
-// CUSTOMER routes
+//customer routes
 router.post("/", authMiddleware([Role.CUSTOMER]), orderController.create);
 router.get("/", authMiddleware([Role.CUSTOMER]), orderController.getMyOrders);
 
-// SELLER routes 
+// seller routes 
 router.get("/seller", authMiddleware([Role.SELLER]), orderController.getSellerOrders);
 router.patch("/seller/:id", authMiddleware([Role.SELLER]), orderController.updateOrderStatus);
 
-// CUSTOMER dynamic route LAST
+// customer dynamic route 
 router.get("/:id", authMiddleware([Role.CUSTOMER]), orderController.getOrderById);
 
 

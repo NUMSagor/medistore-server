@@ -5,6 +5,7 @@ import { userRoutes } from "./modules/user/user.routes";
 import { medicineRoutes } from "./modules/medecine/medicine.routes";
 import { categoryRoutes } from "./modules/category/category.routes";
 import { orderRoutes } from "./modules/order/order.routes";
+import { reviewRoutes } from "./modules/review/review.routes";
 
 
 const app: Application = express();
@@ -24,6 +25,8 @@ app.use("/api/seller/medicines", medicineRoutes);
 
 app.use("/api/categories", categoryRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/reviews", reviewRoutes);
+
 
 
 
