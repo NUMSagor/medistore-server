@@ -3,40 +3,60 @@ import jwt from "jsonwebtoken";
 import { Role } from "../../generated/prisma/enums";
 
 declare global {
-    namespace Express {
-        interface Request {
-            user?: any;
-        }
+  namespace Express {
+    interface Request {
+      user?: {
+        id: string;
+        role: Role;
+      };
     }
+  }
 }
 
 const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
 
 export const authMiddleware = (allowedRoles: Role[] = []) => {
-    return (req: Request, res: Response, next: NextFunction) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const authHeader = req.headers.authorization;
 
-        const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      return res.status(401).json({
+        error: "Unauthorized: No token provided",
+      });
+    }
 
-        if (!authHeader) return res.status(401).json({ error: "Unauthorized" });
-        
+    const token = authHeader.split(" ")[1];
 
-        const token = authHeader.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({
+        error: "Unauthorized: Invalid token format",
+      });
+    }
 
-        if (!token) return res.status(401).json({ error: "Unauthorized" });
+    try {
+      const decoded: any = jwt.verify(token, JWT_SECRET);
 
+      // console.log("Decoded token:", decoded);
 
-        try {
-            const decoded: any = jwt.verify(token, JWT_SECRET);
-            const userRole = String(decoded.role).toUpperCase();
+      req.user = {
+        id: decoded.id, 
+        role: decoded.role,
+      };
 
-            if (allowedRoles.length && !allowedRoles.map(r => r.toString()).includes(userRole)) { return res.status(403).json({ error: "Forbidden" }); }
-            req.user = decoded;
-            next();
+      if (
+        allowedRoles.length &&
+        !allowedRoles.includes(req.user.role)
+      ) {
+        return res.status(403).json({
+          error: "Forbidden: Access denied",
+        });
+      }
 
-
-
-        } catch {
-            res.status(401).json({ error: "Invalid token" });
-        }
-    };
+      next();
+    } catch {
+      return res.status(401).json({
+        error: "Unauthorized: Invalid token",
+      });
+    }
+  };
 };

@@ -14,55 +14,53 @@ interface OrderInput {
 
 const orderService = {
     create: async (data: OrderInput) => {
-        // calculate total price
-        let totalPrice = 0;
-        const itemsData = await Promise.all(
-            data.items.map(async (item) => {
-                const medicine = await prisma.medicine.findUnique({ where: { id: item.medicineId } });
-                if (!medicine) throw new Error("Medicine not found");
-                if (medicine.stock < item.quantity) throw new Error(`Not enough stock for ${medicine.name}`);
-                totalPrice += medicine.price * item.quantity;
-                return {
-                    medicineId: item.medicineId,
-                    quantity: item.quantity,
-                    price: medicine.price,
-                };
-            })
-        );
+        
+        return await prisma.$transaction(async (tx) => {
+            const itemsData = [];
 
-        // create order
+           
+            for (const item of data.items) {
+                const medicine = await tx.medicine.findUnique({ 
+                    where: { id: item.medicineId } 
+                });
 
-        const order = await prisma.order.create({
-            data: {
-                customerId: data.customerId,
-                shippingAddress: data.shippingAddress,
-                items: { create: itemsData },
-            },
-            include: {
-                customer: {
-                    select: {
-                        name: true,
-                        email: true,
-                    },
-                },
-                items: {
-                    include: {
-                        medicine: true,
-                    },
-                },
-            },
-        });
+                if (!medicine) throw new Error(`Medicine with ID ${item.medicineId} not found`);
+                if (medicine.stock < item.quantity) {
+                    throw new Error(`Not enough stock for ${medicine.name}. Available: ${medicine.stock}`);
+                }
 
-        await Promise.all(
-            itemsData.map((item) =>
-                prisma.medicine.update({
+               
+                await tx.medicine.update({
                     where: { id: item.medicineId },
                     data: { stock: { decrement: item.quantity } },
-                })
-            )
-        );
+                });
 
-        return order;
+                itemsData.push({
+                    medicineId: item.medicineId,
+                    quantity: item.quantity,
+                    price: medicine.price, 
+                });
+            }
+
+           
+            return await tx.order.create({
+                data: {
+                    customerId: data.customerId,
+                    shippingAddress: data.shippingAddress,
+                    items: {
+                        create: itemsData,
+                    },
+                },
+                include: {
+                    customer: {
+                        select: { name: true, email: true },
+                    },
+                    items: {
+                        include: { medicine: true },
+                    },
+                },
+            });
+        });
     },
 
     getByCustomer: async (customerId: string) => {
@@ -90,7 +88,7 @@ const orderService = {
                     include: {
                         medicine: {
                             include: {
-                                seller: { select: { name: true } }, // ✅ include seller name
+                                seller: { select: { name: true } },
                             },
                         },
                     },
@@ -111,3 +109,4 @@ const orderService = {
 };
 
 export default orderService;
+

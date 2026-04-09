@@ -10,6 +10,8 @@ model Medicine {
   stock           Int
   isActive        Boolean @default(true)
 
+  imageUrl        String?
+
   sellerId String
   seller   User     @relation("SellerMedicines", fields: [sellerId], references: [id])
 

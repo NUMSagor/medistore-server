@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import userService from "./user.service";
+import { prisma } from "../../lib/prisma";
 
 const userController = {
     // GET /api/admin/users
@@ -31,6 +32,37 @@ const userController = {
             res.status(400).json({ error: (err as Error).message });
         }
     },
+
+
+    // add these two methods to userController:
+
+    // updateProfile: async (req: Request, res: Response) => {
+    //     try {
+    //         const userId = (req.user as any).userId;
+    //         const { name, email, phone } = req.body;
+    //         const updated = await userService.updateProfile(userId, { name, email, phone });
+    //         res.status(200).json(updated);
+    //     } catch (err) {
+    //         res.status(400).json({ message: (err as Error).message });
+    //     }
+    // },
+
+    // updatePassword: async (req: Request, res: Response) => {
+    //     try {
+    //         const userId = (req.user as any).userId;
+    //         const { currentPassword, newPassword } = req.body;
+    //         if (!currentPassword || !newPassword)
+    //             return res.status(400).json({ message: 'Please provide current and new password' });
+    //         const updated = await userService.updatePassword(userId, currentPassword, newPassword);
+    //         res.status(200).json(updated);
+    //     } catch (err) {
+    //         res.status(400).json({ message: (err as Error).message });
+    //     }
+    // },
+
+
+
+
 };
 
 export default userController;

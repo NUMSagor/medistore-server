@@ -11,8 +11,10 @@ import { reviewRoutes } from "./modules/review/review.routes";
 const app: Application = express();
 
 app.use(cors({
-   origin: process.env.APP_URL || "http://localhost:4000",
-   credentials: true
+   origin: "http://localhost:3000", 
+   credentials: true,
+   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+   allowedHeaders: ["Content-Type", "Authorization"] 
 }));
 
 app.use(express.json());

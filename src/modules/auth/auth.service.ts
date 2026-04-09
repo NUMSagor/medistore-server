@@ -10,7 +10,7 @@ import { prisma } from "../../lib/prisma";
 const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
 
 export const authService = {
-    register: async ({ name, email, password, role }: { name: string; email: string; password: string; role: Role }) => {
+    register: async ({ name, email, phone, password, role }: { name: string; email: string; phone: string; password: string; role: Role }) => {
         
         // Only allow CUSTOMER or SELLER to sign up manually
 
@@ -27,22 +27,28 @@ export const authService = {
             data: { name, email, password: hashedPassword, role, status: "ACTIVE" },
         });
 
-        const token = jwt.sign({ userId: user.id,name: user.name, role: user.role }, JWT_SECRET, { expiresIn: "20d" });
+        const token = jwt.sign({ id: user.id, name: user.name, phone: user.phone, role: user.role }, JWT_SECRET, { expiresIn: "20d" });
         return { user, token };
     },
+
+
 
     login: async ({ email, password }: { email: string; password: string }) => {
-        const user = await prisma.user.findUnique({ where: { email } });
-        if (!user) throw new Error("Invalid credentials");
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) throw new Error("Invalid credentials");
 
-        const valid = await bcrypt.compare(password, user.password);
-        if (!valid) throw new Error("Invalid credentials");
+  const valid = await bcrypt.compare(password, user.password);
+  if (!valid) throw new Error("Invalid credentials");
 
-        const token = jwt.sign({ userId: user.id, name:user.name, role: user.role }, JWT_SECRET, { expiresIn: "20d" });
-        return { user, token };
-    },
+  const token = jwt.sign(
+    { id: user.id, name: user.name, role: user.role },
+    JWT_SECRET,
+    { expiresIn: "20d" }
+  );
 
-    verifyToken: (token: string) => {
-        return jwt.verify(token, JWT_SECRET);
-    },
+ 
+  const { password: _, ...safeUser } = user;
+  return { user: safeUser, token };
+},
+
 };
