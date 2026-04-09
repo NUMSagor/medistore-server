@@ -52,7 +52,7 @@ const app: Application = express();
 
 const allowedOrigins = [
   process.env.APP_URL || "http://localhost:3000",
-  process.env.NEXT_PUBLIC_API_URL || "https://client-medistore.vercel.app/"
+  process.env.NEXT_PUBLIC_API_URL || "https://client-medistore.vercel.app"
 ];
 
 app.use(cors({
