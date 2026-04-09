@@ -50,7 +50,10 @@ import { reviewRoutes } from "./modules/review/review.routes";
 const app: Application = express();
 
 app.use(cors({
-  origin: process.env.NEXT_PUBLIC_API_URL,
+  origin: [
+    "http://localhost:3000",                  // dev frontend
+    "https://client-medistore.vercel.app/"   // deployed frontend
+  ],
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"]
