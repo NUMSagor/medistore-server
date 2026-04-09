@@ -5,7 +5,7 @@ const medicineController = {
     // CREATE
     create: async (req: Request, res: Response) => {
         try {
-            const sellerId = req.user?.userId;
+            const sellerId = req.user?.id;
             const data: MedicineInput = { ...req.body, sellerId };
             const medicine = await medicineService.create(data);
             res.status(201).json(medicine);
@@ -48,8 +48,8 @@ const medicineController = {
         try {
             const id = req.params.id as string;
             if (!id) return res.status(400).json({ error: "Invalid medicine ID" });
-            const sellerId = req.user?.userId;
-            const medicine = await medicineService.update(id, sellerId, req.body);
+            const sellerId = req.user?.id;
+            const medicine = await medicineService.update(id, sellerId as string, req.body);
             res.status(200).json(medicine);
         } catch (err) {
             res.status(400).json({ error: (err as Error).message });
@@ -61,8 +61,8 @@ const medicineController = {
         try {
             const id = req.params.id as string;
             if (!id) return res.status(400).json({ error: "Invalid medicine ID" });
-            const sellerId = req.user?.userId;
-            const medicine = await medicineService.delete(id, sellerId);
+            const sellerId = req.user?.id;
+            const medicine = await medicineService.delete(id, sellerId as string);
             res.status(200).json(medicine);
         } catch (err) {
             res.status(400).json({ error: (err as Error).message });

@@ -1,13 +1,19 @@
 import { Request, Response } from "express";
 import reviewService from "./review.service";
-import { ReviewStatus } from "../../../generated/prisma/enums";
+import { ReviewStatus } from "../../generated/prisma";
+// import { ReviewStatus } from "../../generated/prisma";
 
 const reviewController = {
   //  create review of customer
   create: async (req: Request, res: Response) => {
     try {
-      const userId = req.user?.userId;
+      const userId = req.user?.id;
       const { medicineId, rating, comment } = req.body;
+
+      if (!userId) {
+        res.status(401).json({ message: "Unauthorized" });
+        return;
+      }
 
       if (!medicineId) {
         return res.status(400).json({ error: "Medicine ID is required" });
@@ -46,31 +52,31 @@ const reviewController = {
   },
 
   // review approve / reject by admin
- 
+
 
   updateStatus: async (req: Request, res: Response) => {
-  try {
-    const id = req.params.id;
-    const { status } = req.body;
+    try {
+      const id = req.params.id;
+      const { status } = req.body;
 
-    if (!id || typeof id !== "string") {
-      return res.status(400).json({ error: "Invalid review ID" });
+      if (!id || typeof id !== "string") {
+        return res.status(400).json({ error: "Invalid review ID" });
+      }
+
+      if (!status || !(status in ReviewStatus)) {
+        return res.status(400).json({ error: "Invalid review status" });
+      }
+
+      const review = await reviewService.updateStatus(
+        id,
+        status as ReviewStatus
+      );
+
+      res.status(200).json(review);
+    } catch (err) {
+      res.status(400).json({ error: (err as Error).message });
     }
-
-    if (!status || !(status in ReviewStatus)) {
-      return res.status(400).json({ error: "Invalid review status" });
-    }
-
-    const review = await reviewService.updateStatus(
-      id,
-      status as ReviewStatus
-    );
-
-    res.status(200).json(review);
-  } catch (err) {
-    res.status(400).json({ error: (err as Error).message });
-  }
-},
+  },
 
 
 

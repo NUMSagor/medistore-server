@@ -1,7 +1,7 @@
+import "dotenv/config"; // ← must be first
 import bcrypt from "bcryptjs";
 import { prisma } from "../lib/prisma";
-import { Role } from "../../generated/prisma/enums";
-
+import { Role, UserStatus } from "../generated/prisma";
 
 async function seedAdmin() {
   try {
@@ -24,7 +24,7 @@ async function seedAdmin() {
         email,
         password: hashedPassword,
         role: Role.ADMIN,
-        status: "ACTIVE",
+        status: UserStatus.ACTIVE,
       },
     });
 

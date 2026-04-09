@@ -1,5 +1,5 @@
 import { prisma } from "../../lib/prisma";
-import { ReviewStatus } from "../../../generated/prisma/enums";
+import { ReviewStatus } from "../../generated/prisma";
 
 const reviewService = {
   //  creates review of customer

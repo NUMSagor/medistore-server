@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 5050;
 async function main() {
   try {
 
-    await prisma.$connect(); // ডাটাবেস কানেক্ট করুন
+    await prisma.$connect(); 
     console.log("Database connected successfully")
 
     app.get("/", (req, res) => {

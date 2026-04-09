@@ -1,18 +1,18 @@
 import { Router } from "express";
 import reviewController from "./review.controller";
 import { authMiddleware } from "../../middleware/auth.middleware";
-import { Role } from "../../../generated/prisma/enums";
+import { Role } from "../../generated/prisma";
 
 const router = Router();
 router.get("/", reviewController.getByMedicine);
 
 router.post(
   "/",
-  authMiddleware([Role.CUSTOMER]),reviewController.create
+  authMiddleware([Role.CUSTOMER]), reviewController.create
 );
 
 router.patch(
-  "/:id",authMiddleware([Role.ADMIN]),reviewController.updateStatus
+  "/:id", authMiddleware([Role.ADMIN]), reviewController.updateStatus
 );
 
 

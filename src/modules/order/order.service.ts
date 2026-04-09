@@ -1,5 +1,5 @@
 import { prisma } from "../../lib/prisma";
-import { OrderStatus } from "../../../generated/prisma/enums";
+import { OrderStatus } from "../../generated/prisma";
 
 interface OrderItemInput {
     medicineId: string;
@@ -14,14 +14,14 @@ interface OrderInput {
 
 const orderService = {
     create: async (data: OrderInput) => {
-        
+
         return await prisma.$transaction(async (tx) => {
             const itemsData = [];
 
-           
+
             for (const item of data.items) {
-                const medicine = await tx.medicine.findUnique({ 
-                    where: { id: item.medicineId } 
+                const medicine = await tx.medicine.findUnique({
+                    where: { id: item.medicineId }
                 });
 
                 if (!medicine) throw new Error(`Medicine with ID ${item.medicineId} not found`);
@@ -29,7 +29,7 @@ const orderService = {
                     throw new Error(`Not enough stock for ${medicine.name}. Available: ${medicine.stock}`);
                 }
 
-               
+
                 await tx.medicine.update({
                     where: { id: item.medicineId },
                     data: { stock: { decrement: item.quantity } },
@@ -38,11 +38,11 @@ const orderService = {
                 itemsData.push({
                     medicineId: item.medicineId,
                     quantity: item.quantity,
-                    price: medicine.price, 
+                    price: medicine.price,
                 });
             }
 
-           
+
             return await tx.order.create({
                 data: {
                     customerId: data.customerId,
