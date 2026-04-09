@@ -50,7 +50,7 @@ import { reviewRoutes } from "./modules/review/review.routes";
 const app: Application = express();
 
 app.use(cors({
-  origin: process.env.CLIENT_URL || "http://localhost:3000",
+  origin: process.env.NEXT_PUBLIC_API_URL,
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"]
