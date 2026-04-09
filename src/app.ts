@@ -49,11 +49,14 @@ import { reviewRoutes } from "./modules/review/review.routes";
 
 const app: Application = express();
 
+
+const allowedOrigins = [
+  process.env.APP_URL || "http://localhost:3000",
+  process.env.NEXT_PUBLIC_API_URL || "https://client-medistore.vercel.app/"
+];
+
 app.use(cors({
-  origin: [
-    "http://localhost:3000",                  // dev frontend
-    "https://client-medistore.vercel.app/"   // deployed frontend
-  ],
+  origin:allowedOrigins,
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"]
