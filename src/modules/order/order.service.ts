@@ -16,7 +16,9 @@ const orderService = {
     create: async (data: OrderInput) => {
 
         return await prisma.$transaction(async (tx) => {
-            const itemsData = [];
+          
+         const itemsData: { medicineId: string; quantity: number; price: number }[] = [];
+;
 
 
             for (const item of data.items) {
