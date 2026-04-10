@@ -6,16 +6,17 @@ import { Role } from "../../generated/prisma";
 const router = Router();
 
 
-//customer routes
-router.post("/", authMiddleware([Role.CUSTOMER]), orderController.create);
-router.get("/", authMiddleware([Role.CUSTOMER]), orderController.getMyOrders);
-
 // seller routes 
 router.get("/seller", authMiddleware([Role.SELLER]), orderController.getSellerOrders);
 router.patch("/seller/:id", authMiddleware([Role.SELLER]), orderController.updateOrderStatus);
 
+//customer routes
+router.post("/", authMiddleware([Role.CUSTOMER]), orderController.create);
+router.get("/", authMiddleware([Role.CUSTOMER]), orderController.getMyOrders);
+
 // customer dynamic route 
 router.get("/:id", authMiddleware([Role.CUSTOMER]), orderController.getOrderById);
+
 
 
 export const orderRoutes = router;

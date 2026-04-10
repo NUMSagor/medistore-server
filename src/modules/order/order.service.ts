@@ -70,7 +70,7 @@ const orderService = {
             orderBy: { createdAt: "desc" },
         });
     },
-
+    
     getById: async (orderId: string, customerId: string) => {
         return prisma.order.findFirst({
             where: { id: orderId, customerId },
