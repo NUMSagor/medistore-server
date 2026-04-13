@@ -46,6 +46,7 @@ import { medicineRoutes } from "./modules/medecine/medicine.routes";
 import { categoryRoutes } from "./modules/category/category.routes";
 import { orderRoutes } from "./modules/order/order.routes";
 import { reviewRoutes } from "./modules/review/review.routes";
+import { paymentRoutes } from "./modules/payment/payment.routes";
 
 const app: Application = express();
 
@@ -70,10 +71,12 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
-app.use("/api/admin/users", userRoutes);
+app.use("/api/users", userRoutes);
 app.use("/api/seller/medicines", medicineRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/reviews", reviewRoutes);
+
+app.use("/api/payment", paymentRoutes);
 
 export default app;

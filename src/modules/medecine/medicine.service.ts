@@ -35,7 +35,7 @@ const medicineService = {
                 isActive: data.isActive ?? true,
                 categoryId: data.categoryId,
                 sellerId: data.sellerId!,
-                imageUrl: data.imageUrl ?? "", 
+                imageUrl: data.imageUrl ?? "",
             },
             include: {
                 category: true,
@@ -44,14 +44,14 @@ const medicineService = {
         });
     },
 
-    // GET ALL
+
     // getAll: async (filters?: { categoryId?: string; minPrice?: number; maxPrice?: number }) => {
-    //     return prisma.medicine.findMany({
+    //     const medicines = await prisma.medicine.findMany({
     //         where: {
     //             isActive: true,
     //             ...(filters?.categoryId && { categoryId: filters.categoryId }),
-    //             ...(filters?.minPrice && { price: { gte: filters.minPrice } }),
-    //             ...(filters?.maxPrice && { price: { lte: filters.maxPrice } }),
+    //             ...(filters?.minPrice !== undefined && { price: { gte: filters.minPrice } }),
+    //             ...(filters?.maxPrice !== undefined && { price: { lte: filters.maxPrice } }),
     //         },
     //         include: {
     //             category: true,
@@ -59,73 +59,52 @@ const medicineService = {
     //         },
     //         orderBy: { createdAt: "desc" },
     //     });
+
+    //     return medicines; // return full array
     // },
 
 
-//     getAll: async (filters?: { categoryId?: string; minPrice?: number; maxPrice?: number }) => {
-//     // Fetch medicines
-//     const medicines = await prisma.medicine.findMany({
-//         where: {
-//             isActive: true,
-//             ...(filters?.categoryId && { categoryId: filters.categoryId }),
-//             ...(filters?.minPrice && { price: { gte: filters.minPrice } }),
-//             ...(filters?.maxPrice && { price: { lte: filters.maxPrice } }),
-//         },
-//         include: {
-//             category: true,
-//             seller: { select: { id: true, name: true } },
-//         },
-//         orderBy: { createdAt: "desc" },
-//     });
-
-//     // Total number of medicines
-//     const totalMedicines = await prisma.medicine.count({
-//         where: {
-//             isActive: true,
-//             ...(filters?.categoryId && { categoryId: filters.categoryId }),
-//             ...(filters?.minPrice && { price: { gte: filters.minPrice } }),
-//             ...(filters?.maxPrice && { price: { lte: filters.maxPrice } }),
-//         },
-//     });
-
-//     // Total number of categories
-//     const totalCategories = await prisma.category.count();
-
-//     // Total number of sellers
-//     const totalSellers = await prisma.user.count({
-//             where: { role: "SELLER" },
-//         });
-
-//     return {
-//         totalMedicines,
-//         totalCategories,
-//         totalSellers,
-//         medicines,
-//     };
-// },
-
-
-
-getAll: async (filters?: { categoryId?: string; minPrice?: number; maxPrice?: number }) => {
-    const medicines = await prisma.medicine.findMany({
-        where: {
-            isActive: true,
-            ...(filters?.categoryId && { categoryId: filters.categoryId }),
-            ...(filters?.minPrice !== undefined && { price: { gte: filters.minPrice } }),
-            ...(filters?.maxPrice !== undefined && { price: { lte: filters.maxPrice } }),
-        },
-        include: {
-            category: true,
-            seller: { select: { id: true, name: true } },
-        },
-        orderBy: { createdAt: "desc" },
-    });
-
-    return medicines; // return full array
-},
-
-
     // GET BY ID
+
+
+    getAll: async (filters?: {
+        categoryId?: string;
+        minPrice?: number;
+        maxPrice?: number;
+        search?: string;
+        sort?: string;
+    }) => {
+        return prisma.medicine.findMany({
+            where: {
+                isActive: true,
+                ...(filters?.categoryId && { categoryId: filters.categoryId }),
+                ...(filters?.minPrice !== undefined && { price: { gte: filters.minPrice } }),
+                ...(filters?.maxPrice !== undefined && { price: { lte: filters.maxPrice } }),
+                ...(filters?.search && {
+                    OR: [
+                        { name: { contains: filters.search, mode: "insensitive" } },
+                        { genericName: { contains: filters.search, mode: "insensitive" } },
+                    ],
+                }),
+            },
+            include: {
+                category: true,
+                seller: { select: { id: true, name: true } },
+            },
+            orderBy:
+                filters?.sort === "price_asc" ? { price: "asc" } :
+                    filters?.sort === "price_desc" ? { price: "desc" } :
+                        filters?.sort === "name_asc" ? { name: "asc" } :
+                            filters?.sort === "newest" ? { createdAt: "desc" } :
+                                { createdAt: "desc" },
+        });
+    },
+
+
+
+
+
+
     getById: async (id: string) => {
         return prisma.medicine.findUnique({
             where: { id },
@@ -137,10 +116,30 @@ getAll: async (filters?: { categoryId?: string; minPrice?: number; maxPrice?: nu
     },
 
     // UPDATE
-    update: async (id: string, sellerId: string, data: Partial<MedicineInput>) => {
+    // update: async (id: string, sellerId: string, data: Partial<MedicineInput>) => {
+    //     const existing = await prisma.medicine.findUnique({ where: { id } });
+    //     if (!existing) throw new Error("Medicine not found");
+    //     if (existing.sellerId !== sellerId) throw new Error("Unauthorized");
+
+    //     return prisma.medicine.update({
+    //         where: { id },
+    //         data,
+    //         include: {
+    //             category: true,
+    //             seller: { select: { id: true, name: true } },
+    //         },
+    //     });
+    // },
+
+
+    update: async (id: string, sellerId: string, role: string, data: Partial<MedicineInput>) => {
         const existing = await prisma.medicine.findUnique({ where: { id } });
         if (!existing) throw new Error("Medicine not found");
-        if (existing.sellerId !== sellerId) throw new Error("Unauthorized");
+
+        // Admin হলে ownership check skip
+        if (role !== 'ADMIN' && existing.sellerId !== sellerId) {
+            throw new Error("Unauthorized");
+        }
 
         return prisma.medicine.update({
             where: { id },

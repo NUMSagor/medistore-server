@@ -36,29 +36,29 @@ const userController = {
 
     // add these two methods to userController:
 
-    // updateProfile: async (req: Request, res: Response) => {
-    //     try {
-    //         const userId = (req.user as any).userId;
-    //         const { name, email, phone } = req.body;
-    //         const updated = await userService.updateProfile(userId, { name, email, phone });
-    //         res.status(200).json(updated);
-    //     } catch (err) {
-    //         res.status(400).json({ message: (err as Error).message });
-    //     }
-    // },
+    updateProfile: async (req: Request, res: Response) => {
+        try {
+            const userId = (req.user as any).id;
+            const { name, email, phone } = req.body;
+            const updated = await userService.updateProfile(userId, { name, email, phone });
+            res.status(200).json(updated);
+        } catch (err) {
+            res.status(400).json({ message: (err as Error).message });
+        }
+    },
 
-    // updatePassword: async (req: Request, res: Response) => {
-    //     try {
-    //         const userId = (req.user as any).userId;
-    //         const { currentPassword, newPassword } = req.body;
-    //         if (!currentPassword || !newPassword)
-    //             return res.status(400).json({ message: 'Please provide current and new password' });
-    //         const updated = await userService.updatePassword(userId, currentPassword, newPassword);
-    //         res.status(200).json(updated);
-    //     } catch (err) {
-    //         res.status(400).json({ message: (err as Error).message });
-    //     }
-    // },
+    updatePassword: async (req: Request, res: Response) => {
+        try {
+            const userId = (req.user as any).id;
+            const { currentPassword, newPassword } = req.body;
+            if (!currentPassword || !newPassword)
+                return res.status(400).json({ message: 'Please provide current and new password' });
+            const updated = await userService.updatePassword(userId, currentPassword, newPassword);
+            res.status(200).json(updated);
+        } catch (err) {
+            res.status(400).json({ message: (err as Error).message });
+        }
+    },
 
 
 

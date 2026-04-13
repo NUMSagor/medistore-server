@@ -65,6 +65,16 @@ const orderService = {
         });
     },
 
+    getAll: async () => {
+        return prisma.order.findMany({
+            include: {
+                items: { include: { medicine: true } },
+                customer: { select: { name: true, email: true } },
+            },
+            orderBy: { createdAt: "desc" },
+        });
+    },
+
     getByCustomer: async (customerId: string) => {
         return prisma.order.findMany({
             where: { customerId },
@@ -80,8 +90,31 @@ const orderService = {
         });
     },
 
+    // getBySeller: async (sellerId: string) => {
+    //     return prisma.order.findMany({
+    //         where: {
+    //             items: { some: { medicine: { sellerId } } },
+    //         },
+    //         include: {
+    //             items: {
+    //                 include: {
+    //                     medicine: {
+    //                         include: {
+    //                             seller: { select: { name: true } },
+    //                         },
+    //                     },
+    //                 },
+    //             },
+    //             customer: true,
+    //         },
+    //         orderBy: { createdAt: "desc" },
+    //     });
+
+    // },
+
+
     getBySeller: async (sellerId: string) => {
-        return prisma.order.findMany({
+        const orders = await prisma.order.findMany({
             where: {
                 items: { some: { medicine: { sellerId } } },
             },
@@ -99,13 +132,40 @@ const orderService = {
             },
             orderBy: { createdAt: "desc" },
         });
+
+        // only return items belonging to this seller
+        return orders.map(order => ({
+            ...order,
+            items: order.items.filter(item => item.medicine.sellerId === sellerId),
+        }));
     },
 
-    updateStatus: async (orderId: string, status: OrderStatus) => {
+
+    // updateStatus: async (orderId: string, status: OrderStatus) => {
+    //     return prisma.order.update({
+    //         where: { id: orderId },
+    //         data: { status },
+    //         include: { items: { include: { medicine: true } }, customer: true },
+    //     });
+    // },
+
+    updateStatus: async (orderId: string, status: OrderStatus, sellerId: string) => {
+        const order = await prisma.order.findFirst({
+            where: {
+                id: orderId,
+                items: { some: { medicine: { sellerId } } },
+            },
+        });
+
+        if (!order) throw new Error("Order not found or you are not authorized");
+
         return prisma.order.update({
             where: { id: orderId },
             data: { status },
-            include: { items: { include: { medicine: true } }, customer: true },
+            include: {
+                items: { include: { medicine: true } },
+                customer: true,
+            },
         });
     },
 };

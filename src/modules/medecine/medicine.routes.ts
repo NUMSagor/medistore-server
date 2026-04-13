@@ -10,8 +10,8 @@ router.get("/", medicineController.getAll);
 router.get("/:id", medicineController.getById);
 
 // SELLER routes
-router.post("/", authMiddleware([Role.SELLER]), medicineController.create);
-router.put("/:id", authMiddleware([Role.SELLER]), medicineController.update);
-router.delete("/:id", authMiddleware([Role.SELLER]), medicineController.delete);
+router.post("/", authMiddleware([Role.SELLER, Role.ADMIN]), medicineController.create);
+router.put("/:id", authMiddleware([Role.SELLER, Role.ADMIN]), medicineController.update);
+router.delete("/:id", authMiddleware([Role.SELLER, Role.ADMIN]), medicineController.delete);
 
 export const medicineRoutes = router;

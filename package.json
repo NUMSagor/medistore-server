@@ -2,14 +2,14 @@
   "name": "medistore-server",
   "version": "1.0.0",
   "main": "server.js",
-   "type": "commonjs",
-"scripts": {
-  "dev": "tsx watch src/server.ts",
-  "build": "prisma generate --config prisma.config.ts",
-  "start": "tsx src/server.ts",
-  "postinstall": "prisma generate --config prisma.config.ts",
-  "seed": "tsx src/scripts/seedAdmin.ts"
-},
+  "type": "commonjs",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "prisma generate --config prisma.config.ts",
+    "start": "tsx src/server.ts",
+    "postinstall": "prisma generate --config prisma.config.ts",
+    "seed": "tsx src/scripts/seedAdmin.ts"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -36,7 +36,8 @@
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
-    "pg": "^8.17.2"
+    "pg": "^8.17.2",
+    "stripe": "^22.0.1"
   },
   "prisma": {
     "seed": "tsx src/scripts/seedAdmin.ts"

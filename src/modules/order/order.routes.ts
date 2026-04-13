@@ -5,6 +5,9 @@ import { Role } from "../../generated/prisma";
 
 const router = Router();
 
+// ADMIN
+router.get("/admin/all", authMiddleware([Role.ADMIN]), orderController.getAll);
+
 
 // seller routes 
 router.get("/seller", authMiddleware([Role.SELLER]), orderController.getSellerOrders);
