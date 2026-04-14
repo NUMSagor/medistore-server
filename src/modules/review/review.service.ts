@@ -3,6 +3,22 @@ import { ReviewStatus } from "../../generated/prisma";
 
 const reviewService = {
   //  creates review of customer
+  // create: async (data: {
+  //   rating: number;
+  //   comment?: string;
+  //   userId: string;
+  //   medicineId: string;
+  // }) => {
+  //   return prisma.review.create({
+  //     data: {
+  //       rating: data.rating,
+  //       comment: data.comment ?? null, // 🔥 KEY FIX
+  //       userId: data.userId,
+  //       medicineId: data.medicineId,
+  //     },
+  //   });
+  // },
+
   create: async (data: {
     rating: number;
     comment?: string;
@@ -12,9 +28,13 @@ const reviewService = {
     return prisma.review.create({
       data: {
         rating: data.rating,
-        comment: data.comment ?? null, // 🔥 KEY FIX
+        comment: data.comment ?? null,
         userId: data.userId,
         medicineId: data.medicineId,
+        status: ReviewStatus.APPROVED, // ← add করুন
+      },
+      include: {
+        user: { select: { id: true, name: true } },
       },
     });
   },
