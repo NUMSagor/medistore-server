@@ -1,4 +1,32 @@
-import "dotenv/config"; 
+// import "dotenv/config"; 
+// import { PrismaPg } from "@prisma/adapter-pg";
+// import pg from "pg";
+// import { PrismaClient } from "../generated/prisma";
+
+// const globalForPrisma = globalThis as unknown as {
+//   prisma: PrismaClient | undefined;
+// };
+
+// const pool = new pg.Pool({
+//   connectionString: process.env.DATABASE_URL,
+// });
+
+// const adapter = new PrismaPg(pool as any);
+
+// export const prisma =
+//   globalForPrisma.prisma ??
+//   new PrismaClient({
+//     adapter,
+//   });
+
+// if (process.env.NODE_ENV !== "production") {
+//   globalForPrisma.prisma = prisma;
+// }
+
+
+
+
+import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
 import { PrismaClient } from "../generated/prisma";
@@ -7,8 +35,14 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
+const connectionString = process.env.DATABASE_URL;
+
+if (!connectionString) {
+  throw new Error("DATABASE_URL is not defined in .env file");
+}
+
 const pool = new pg.Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString,
 });
 
 const adapter = new PrismaPg(pool as any);
@@ -16,7 +50,7 @@ const adapter = new PrismaPg(pool as any);
 export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
-    adapter,
+    adapter, 
   });
 
 if (process.env.NODE_ENV !== "production") {
