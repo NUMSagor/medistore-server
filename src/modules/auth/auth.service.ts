@@ -33,9 +33,30 @@ export const authService = {
 
 
 
+    // login: async ({ email, password }: { email: string; password: string }) => {
+    //     const user = await prisma.user.findUnique({ where: { email } });
+    //     if (!user) throw new Error("Invalid credentials");
+
+    //     const valid = await bcrypt.compare(password, user.password);
+    //     if (!valid) throw new Error("Invalid credentials");
+
+    //     const token = jwt.sign(
+    //         { id: user.id, name: user.name, role: user.role },
+    //         JWT_SECRET,
+    //         { expiresIn: "20d" }
+    //     );
+
+
+    //     const { password: _, ...safeUser } = user;
+    //     return { user: safeUser, token };
+    // },
+
     login: async ({ email, password }: { email: string; password: string }) => {
         const user = await prisma.user.findUnique({ where: { email } });
         if (!user) throw new Error("Invalid credentials");
+
+        // ✅ User registered via Google has no password
+        if (!user.password) throw new Error("This account uses Google login. Please sign in with Google.");
 
         const valid = await bcrypt.compare(password, user.password);
         if (!valid) throw new Error("Invalid credentials");
@@ -46,9 +67,7 @@ export const authService = {
             { expiresIn: "20d" }
         );
 
-
         const { password: _, ...safeUser } = user;
         return { user: safeUser, token };
     },
-
 };

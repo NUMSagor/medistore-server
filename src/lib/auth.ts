@@ -55,6 +55,73 @@
 
 
 
+// import type { betterAuth } from "better-auth";
+// let _auth: Awaited<ReturnType<typeof createAuth>> | null = null;
+
+// async function createAuth() {
+//   const { betterAuth } = await import("better-auth");
+//   const { prismaAdapter } = await import("better-auth/adapters/prisma");
+//   const { prisma } = await import("./prisma.js");
+//   const { sendOtpEmail } = await import("./email.js");
+
+//   return betterAuth({
+//     database: prismaAdapter(prisma, {
+//       provider: "postgresql",
+//     }),
+
+//     baseURL: "https://medistore-server.vercel.app/api",
+//     trustedOrigins: [
+//       "https://client-medistore.vercel.app",
+//       "http://localhost:3000",
+//     ],
+
+//     user: {
+//       additionalFields: {
+//         name: {
+//           type: "string",
+//           required: true,
+//         },
+//         role: {
+//           type: "string",
+//           defaultValue: "CUSTOMER",
+//           input: true,
+//         },
+//       },
+//     },
+
+//     emailAndPassword: {
+//       enabled: true,
+//     },
+
+//     socialProviders: {
+//       google: {
+//         clientId: process.env.GOOGLE_CLIENT_ID!,
+//         clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+//       },
+//     },
+
+//     emailVerification: {
+//       sendVerificationEmail: async ({ user, token }) => {
+//         await sendOtpEmail(user.email, token);
+//       },
+//     },
+//   });
+// }
+
+// export async function getAuth() {
+//   if (!_auth) {
+//     _auth = await createAuth();
+//   }
+//   return _auth;
+// }
+
+// // Type export
+// export type Auth = Awaited<ReturnType<typeof createAuth>>;
+
+
+
+
+
 import type { betterAuth } from "better-auth";
 let _auth: Awaited<ReturnType<typeof createAuth>> | null = null;
 
@@ -69,11 +136,15 @@ async function createAuth() {
       provider: "postgresql",
     }),
 
-    baseURL: "https://medistore-server.vercel.app/api",
+    // ✅ Use env var so it works both locally and in production
+    baseURL: process.env.BETTER_AUTH_URL || "http://localhost:5050",
+
     trustedOrigins: [
-      "https://client-medistore.vercel.app",
-      "http://localhost:3000",
+      process.env.APP_URL || "http://localhost:3000",
+      process.env.CLIENT_URL || "https://client-medistore.vercel.app",
     ],
+
+    secret: process.env.BETTER_AUTH_SECRET!, // ✅ always set this
 
     user: {
       additionalFields: {
@@ -115,5 +186,4 @@ export async function getAuth() {
   return _auth;
 }
 
-// Type export
 export type Auth = Awaited<ReturnType<typeof createAuth>>;
