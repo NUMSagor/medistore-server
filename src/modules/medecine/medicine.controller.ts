@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import medicineService, { MedicineInput } from "./medicine.service";
+import medicineService, { MedicineInput } from "./medicine.service.js";
 
 const medicineController = {
     // CREATE

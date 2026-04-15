@@ -1,5 +1,5 @@
-import { prisma } from "../../lib/prisma";
-import { ReviewStatus } from "../../generated/prisma";
+import { ReviewStatus } from "../../generated/prisma/index.js";
+import { prisma } from "../../lib/prisma.js";
 
 const reviewService = {
   //  creates review of customer

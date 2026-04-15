@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import userService from "./user.service";
-import { prisma } from "../../lib/prisma";
+import userService from "./user.service.js";
+import { prisma } from "../../lib/prisma.js";
 
 const userController = {
     // GET /api/admin/users

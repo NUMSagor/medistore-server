@@ -1,7 +1,8 @@
 import { Router } from "express";
-import reviewController from "./review.controller";
-import { authMiddleware } from "../../middleware/auth.middleware";
-import { Role } from "../../generated/prisma";
+import reviewController from "./review.controller.js";
+import { authMiddleware } from "../../middleware/auth.middleware.js";
+import { Role } from "../../generated/prisma/index.js";
+
 
 const router = Router();
 router.get("/", reviewController.getByMedicine);

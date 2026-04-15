@@ -1,7 +1,8 @@
 import { Router } from "express";
-import { authMiddleware } from "../../middleware/auth.middleware";
-import { Role } from "../../generated/prisma";
+import { authMiddleware } from "../../middleware/auth.middleware.js";
+
 import Stripe from "stripe";
+import { Role } from "../../generated/prisma/index.js";
 
 const router = Router();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);

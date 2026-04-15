@@ -1,5 +1,7 @@
-import { Role, UserStatus } from "../../generated/prisma";
-import { prisma } from "../../lib/prisma";
+// import { Role, UserStatus } from "../../generated/prisma.js";
+import { Role } from "better-auth/client";
+import { prisma } from "../../lib/prisma.js";
+import { UserStatus } from "../../generated/prisma/index.js";
 
 const userService = {
   getAllUsers: async () => {

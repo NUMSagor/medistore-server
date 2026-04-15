@@ -1,8 +1,8 @@
 
-import { Role } from "../../generated/prisma";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { prisma } from "../../lib/prisma";
+import { prisma } from "../../lib/prisma.js";
+import { Role } from "../../generated/prisma/index.js";
 
 
 

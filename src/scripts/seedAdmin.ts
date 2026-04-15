@@ -1,7 +1,8 @@
 import "dotenv/config"; // ← must be first
 import bcrypt from "bcryptjs";
-import { prisma } from "../lib/prisma";
-import { Role, UserStatus } from "../generated/prisma";
+import { prisma } from "../lib/prisma.js";
+import { Role, UserStatus } from "../generated/prisma/index.js";
+// import { Role, UserStatus } from "../generated/prisma";
 
 async function seedAdmin() {
   try {

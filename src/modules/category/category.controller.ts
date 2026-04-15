@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import categoryService from "./category.service";
+import categoryService from "./category.service.js";
 
 const categoryController = {
     // POST /api/categories

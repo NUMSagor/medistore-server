@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
-import reviewService from "./review.service";
-import { ReviewStatus } from "../../generated/prisma";
-// import { ReviewStatus } from "../../generated/prisma";
+import reviewService from "./review.service.js";
+import { ReviewStatus } from "../../generated/prisma/index.js";
+
+
 
 const reviewController = {
   //  create review of customer

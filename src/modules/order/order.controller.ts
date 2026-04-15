@@ -184,8 +184,9 @@
 
 
 import { Request, Response } from "express";
-import orderService from "./order.service";
-import { OrderStatus } from "../../generated/prisma";
+import orderService from "./order.service.js";
+import { OrderStatus } from "../../generated/prisma/index.js";
+
 
 const orderController = {
 
