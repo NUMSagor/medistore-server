@@ -1,69 +1,206 @@
 # 💊 MediStore – Full Stack Medicine Store Web App
 
-MediStore is a **full-stack medicine e-commerce platform** where:
-- 🛒 Customers can browse and purchase medicines
-- 🏪 Sellers can manage inventory and product listings
-- 👑 Admins oversee and control the entire system
+**MediStore** is a full-stack medicine e-commerce platform where customers can browse medicines, sellers can manage inventory, and admins control the entire system.
 
-Built with a **modern production-ready stack**:  
-**Next.js, TypeScript, Express, Prisma, PostgreSQL** — deployed seamlessly on **Vercel**.
+Built with a modern production-ready stack using **Next.js, TypeScript, Express, Prisma, PostgreSQL**, and deployed on **Vercel**.
 
 ---
 
-## 🌐 Live Links
-- **Frontend Live** 👉 [client-medistore.vercel.app](https://client-medistore.vercel.app/)  
-- **Backend Live** 👉 [medistore-server.vercel.app](https://medistore-server.vercel.app/)  
-- **Frontend Repository** 👉 [GitHub](https://github.com/NUMSagor/client-medistore.git)  
-- **Backend Repository** 👉 [GitHub](https://github.com/NUMSagor/medistore-server.git)  
+# 🌐 Live Links
+
+Frontend Live
+👉 https://client-medistore.vercel.app/
+
+Backend Live
+👉 https://medistore-server.vercel.app/
+
+Frontend Repository
+👉 https://github.com/NUMSagor/client-medistore.git
+
+Backend Repository
+👉 https://github.com/NUMSagor/medistore-server.git
 
 ---
 
-## 👤 Demo Login Credentials
+# 👤 Demo Login Credentials
+
 ### 👑 Admin Access
-- **Email:** `smadmin@gmail.com`  
-- **Password:** `sagor123450`  
+
+Email: [smadmin@gmail.com](mailto:smadmin@gmail.com)
+Password: sagor123450
+
+
+# 🚀 Features
+
+## 👑 Admin Panel
+
+* Manage users
+* Manage sellers
+* Manage medicines
+* Manage categories
+* View platform statistics
+* Control order status
+
+## 🏪 Seller Dashboard
+
+* Add medicines
+* Update medicines
+* Delete medicines
+* Manage inventory
+* Track orders
+
+## 🧑 Customer Features
+
+* Browse medicines
+* Filter medicines by category
+* View medicine details
+* Add to cart
+* Checkout system
+* Order history tracking
+* Profile management
+
+## 🔐 Authentication System
+
+* Role-based authentication
+* Admin / Seller / Customer access control
+* Protected dashboard routes
+* Secure API authorization
 
 ---
 
-## ⚙️ Technology Stack
+# 🛠️ Tech Stack
 
-### Frontend
-- **Next.js** – Server-side rendering & static site generation  
-- **TypeScript** – Strict typing for maintainability  
-- **Tailwind CSS** – Utility-first styling framework  
-- **shadcn/ui** – Modern UI components  
+## Frontend
 
-### Backend
-- **Node.js** – Runtime environment  
-- **Express.js** – REST API development  
-- **Prisma** – Database ORM  
-
-### Database
-- **PostgreSQL** – Relational database system  
-
-### Authentication
-- **JWT** – Secure token-based authentication  
-- **Better-Auth** – Enhanced authentication handling  
-
-### Payment Integration
-- **Stripe** – Secure online payments  
-
-### Deployment
-- **Vercel** – Hosting & CI/CD  
-
-### Package Management
-- **npm** – Dependency management  
+| Technology           | Purpose                 |
+| -------------------- | ----------------------- |
+| Next.js (App Router) | SSR + Routing           |
+| TypeScript           | Type Safety             |
+| Tailwind CSS         | UI Styling              |
+| Context API          | Global State Management |
 
 ---
 
-## 🚀 Features
-- 🔍 Browse medicines with categories & search  
-- 🛒 Add to cart & checkout with Stripe integration  
-- 👤 Role-based authentication (Customer, Seller, Admin)  
-- 📦 Seller dashboard for inventory management  
-- 📊 Admin panel for system-wide control  
-- 🌐 Fully responsive UI with Tailwind & shadcn/ui  
+## Backend
+
+| Technology | Purpose               |
+| ---------- | --------------------- |
+| Node.js    | Runtime               |
+| Express.js | REST API              |
+| PostgreSQL | Database              |
+| Prisma ORM | Database Access Layer |
+| TypeScript | Type Safety           |
 
 ---
 
-## 📂 Project Structure
+## Deployment
+
+| Service | Purpose                          |
+| ------- | -------------------------------- |
+| Vercel  | Frontend Hosting                 |
+| Vercel  | Backend Hosting (Serverless API) |
+
+---
+
+# 📂 Project Architecture
+
+
+
+
+
+
+
+# ⚙️ Environment Variables Setup
+
+## Frontend (.env)
+
+NEXT_PUBLIC_API_URL=your_backend_url
+
+Example:
+
+NEXT_PUBLIC_API_URL=https://medistore-server.vercel.app
+
+---
+
+## Backend (.env)
+
+DATABASE_URL=your_postgres_connection_string
+
+JWT_SECRET=your_secret_key
+
+FRONTEND_URL=https://client-medistore.vercel.app
+
+
+
+
+
+# 🧪 API Base URL
+
+https://medistore-server.vercel.app/api
+
+Example:
+
+GET /medicines
+POST /orders
+POST /auth/login
+
+---
+
+# 🔐 Role-Based Access Structure
+
+| Role     | Access              |
+| -------- | ------------------- |
+| Admin    | Full control        |
+| Seller   | Medicine management |
+| Customer | Purchase medicines  |
+
+---
+
+# 📊 Database Schema Highlights
+
+Main entities:
+
+* User
+* Medicine
+* Category
+* Order
+* OrderItem
+* Role
+
+Managed using **Prisma ORM** with PostgreSQL.
+
+---
+
+# ✨ Key Highlights of This Project
+
+✔ Full-stack production structure
+✔ Role-based authentication
+✔ Secure REST API
+✔ Prisma ORM integration
+✔ PostgreSQL relational database
+✔ Serverless backend deployment
+✔ Next.js App Router architecture
+✔ Clean modular backend architecture
+
+---
+
+# 📸 Future Improvements
+
+* Online payment integration
+* Medicine prescription upload feature
+* Email notifications
+* Admin analytics dashboard charts
+* Review & rating system
+
+---
+
+# 👨‍💻 Author
+
+Sagor
+GitHub: https://github.com/NUMSagor
+
+---
+
+# ⭐ Support
+
+If you like this project, consider giving it a **star ⭐** on GitHub.
