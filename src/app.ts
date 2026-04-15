@@ -84,15 +84,12 @@ app.use(cors({
 
 
 
-app.all("/api/auth/*splat", async (req, res, next) => {
-  try {
-
-    const { toNodeHandler } = await import("better-auth/node");
-    return toNodeHandler(auth)(req, res);
-  } catch (error) {
-    next(error);
-  }
+app.all("/api/auth/*splat", async (req, res) => {
+  
+  const { toNodeHandler } = await (new Function('return import("better-auth/node")')());
+  return toNodeHandler(auth)(req, res);
 });
+
 
 
 app.use(express.json());
