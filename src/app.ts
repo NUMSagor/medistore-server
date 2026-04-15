@@ -52,13 +52,14 @@
 
 import express, { Application } from "express";
 import cors from "cors";
-import { auth } from "./lib/auth";
-import { userRoutes } from "./modules/user/user.routes";
-import { medicineRoutes } from "./modules/medecine/medicine.routes";
-import { categoryRoutes } from "./modules/category/category.routes";
-import { orderRoutes } from "./modules/order/order.routes";
-import { reviewRoutes } from "./modules/review/review.routes";
-import { paymentRoutes } from "./modules/payment/payment.routes";
+import { auth } from "./lib/auth.js";
+import { userRoutes } from "./modules/user/user.routes.js";
+import { medicineRoutes } from "./modules/medecine/medicine.routes.js";
+import { categoryRoutes } from "./modules/category/category.routes.js";
+import { orderRoutes } from "./modules/order/order.routes.js";
+import { reviewRoutes } from "./modules/review/review.routes.js";
+import { paymentRoutes } from "./modules/payment/payment.routes.js";
+import { toNodeHandler } from "better-auth/node";
 
 const app: Application = express();
 
@@ -84,12 +85,7 @@ app.use(cors({
 
 
 
-app.all("/api/auth/*splat", async (req, res) => {
-  
-  const { toNodeHandler } = await (new Function('return import("better-auth/node")')());
-  return toNodeHandler(auth)(req, res);
-});
-
+app.all("/api/auth/*splat", toNodeHandler(auth));
 
 
 app.use(express.json());
