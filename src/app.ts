@@ -52,7 +52,6 @@
 
 import express, { Application } from "express";
 import cors from "cors";
-import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth";
 import { userRoutes } from "./modules/user/user.routes";
 import { medicineRoutes } from "./modules/medecine/medicine.routes";
@@ -83,12 +82,18 @@ app.use(cors({
 }));
 
 
-// must be before express.json()
 
-app.all("/api/auth/*splat", async (req, res) => {
-  const { toNodeHandler } = await import("better-auth/node");
-  return toNodeHandler(auth)(req, res);
+
+app.all("/api/auth/*splat", async (req, res, next) => {
+  try {
+
+    const { toNodeHandler } = await import("better-auth/node");
+    return toNodeHandler(auth)(req, res);
+  } catch (error) {
+    next(error);
+  }
 });
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
