@@ -1,7 +1,7 @@
-// import { Role, UserStatus } from "../../generated/prisma.js";
-import { Role } from "better-auth/client";
 import { prisma } from "../../lib/prisma.js";
-import { UserStatus } from "../../generated/prisma/index.js";
+import { Prisma, Role, UserStatus } from "../../generated/prisma/index.js";
+
+
 
 const userService = {
   getAllUsers: async () => {
@@ -19,25 +19,51 @@ const userService = {
     });
   },
 
-  updateUser: async (
-    id: string,
-    payload: { role?: Role; status?: UserStatus }
-  ) => {
-    return prisma.user.update({
-      where: { id },
-      data: payload,
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        phone: true,
-        role: true,
-        status: true,
-      },
-    });
-  },
+  // updateUser: async (
+  //   id: string,
+  //   payload: { role?: Role; status?: UserStatus }
+  // ) => {
+  //   return prisma.user.update({
+  //     where: { id },
+  //     data: payload,
+  //     select: {
+  //       id: true,
+  //       name: true,
+  //       email: true,
+  //       phone: true,
+  //       role: true,
+  //       status: true,
+  //     },
+  //   });
+  // },
 
   // add these two methods to userService:
+
+updateUser: async (
+  id: string,
+  payload: { role?: Role; status?: UserStatus }
+) => {
+  // ✅ Prisma.UserUpdateInput হিসেবে cast করো
+  const data: Prisma.UserUpdateInput = {
+    ...(payload.role !== undefined && { role: payload.role }),
+    ...(payload.status !== undefined && { status: payload.status }),
+  };
+
+  return prisma.user.update({
+    where: { id },
+    data,
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      phone: true,
+      role: true,
+      status: true,
+    },
+  });
+},
+
+
 
 updateProfile: async (id: string, payload: { name?: string; email?: string; phone?: string }) => {
   return prisma.user.update({

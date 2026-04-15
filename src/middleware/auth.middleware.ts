@@ -69,12 +69,11 @@
 
 
 
-
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { Role } from "../generated/prisma";
-import { auth } from "../lib/auth";
+import { getAuth } from "../lib/auth.js"; // ✅ auth এর বদলে getAuth
 import { fromNodeHeaders } from "better-auth/node";
+import { Role } from "../generated/prisma/index.js";
 
 declare global {
   namespace Express {
@@ -89,7 +88,7 @@ declare global {
 
 const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
 
-// ✅ OLD — JWT based (keep for existing routes)
+// ✅ JWT based middleware — আগের মতোই
 export const authMiddleware = (allowedRoles: Role[] = []) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
@@ -126,10 +125,12 @@ export const authMiddleware = (allowedRoles: Role[] = []) => {
   };
 };
 
-// ✅ NEW — Better Auth session based (use for new routes)
+// ✅ Better Auth session based middleware
 export const sessionMiddleware = (allowedRoles: Role[] = []) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
+      const auth = await getAuth(); 
+      
       const session = await auth.api.getSession({
         headers: fromNodeHeaders(req.headers),
       });

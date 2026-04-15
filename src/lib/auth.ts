@@ -56,7 +56,6 @@
 
 
 import type { betterAuth } from "better-auth";
-
 let _auth: Awaited<ReturnType<typeof createAuth>> | null = null;
 
 async function createAuth() {
