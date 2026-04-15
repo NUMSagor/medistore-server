@@ -85,7 +85,10 @@ app.use(cors({
 
 // must be before express.json()
 
-app.all("/api/auth/*splat", toNodeHandler(auth));
+app.all("/api/auth/*splat", async (req, res) => {
+  const { toNodeHandler } = await import("better-auth/node");
+  return toNodeHandler(auth)(req, res);
+});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
