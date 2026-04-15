@@ -52,6 +52,7 @@
 
 import express, { Application } from "express";
 import cors from "cors";
+import { authRoutes } from "./modules/auth/auth.routes.js";
 import { userRoutes } from "./modules/user/user.routes.js";
 import { medicineRoutes } from "./modules/medecine/medicine.routes.js";
 import { categoryRoutes } from "./modules/category/category.routes.js";
@@ -59,6 +60,7 @@ import { orderRoutes } from "./modules/order/order.routes.js";
 import { reviewRoutes } from "./modules/review/review.routes.js";
 import { paymentRoutes } from "./modules/payment/payment.routes.js";
 import { toNodeHandler } from "better-auth/node";
+
 
 const app: Application = express();
 
@@ -99,7 +101,7 @@ app.get("/", (req, res) => {
   res.json({ message: "Medistore API is running!" });
 });
 
-app.use("/api/v1/jwt-auth", userRoutes);
+app.use("/api/v1/jwt-auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/seller/medicines", medicineRoutes);
 app.use("/api/categories", categoryRoutes);
